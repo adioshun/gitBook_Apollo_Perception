@@ -15,6 +15,12 @@
     - [Document-Technical Tutorial](https://github.com/ApolloAuto/apollo/blob/master/docs/technical_tutorial/README.md)
     - [Howto Guides](https://github.com/ApolloAuto/apollo/tree/master/docs/howto)
 
+
+- [블로그](https://medium.com/apollo-auto) : Meduim
+
+
+- [Youtube](https://www.youtube.com/channel/UC8wR_NX_NShUTSSqIaEUY9Q)
+
 ## List 
 
 
