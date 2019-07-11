@@ -9,7 +9,6 @@
 ## Articles
 
 - [README](Articles/README.md)
-- [Why Apollo: Advantages, Disadvantages & Alternatives](Articles/Why-Apollo-Advantages-Disadvantages-Alternatives.md)
 
 
 
