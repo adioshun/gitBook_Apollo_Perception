@@ -9,6 +9,3 @@
 4. [HM object tracking](https://mp.weixin.qq.com/s?__biz=MzI1NjkxOTMyNQ==&mid=2247485916&idx=1&sn=5510b30bde81a10c0271e526151a8cac&scene=19#wechat_redirect)
 
 
----
-
-[How Apollo Perceptual Analysis Tracks HM Objects](https://mp.weixin.qq.com/s?__biz=MzI1NjkxOTMyNQ==&mid=2247485879&idx=1&sn=d921ab976ebc72c502eb5df1ef7ff548&chksm=ea1e1bc5dd6992d3220bd47c5cd951f38648c060d4f9dc9bfbe5eac1a3076f920fa3e360c038&scene=21#wechat_redirect)
