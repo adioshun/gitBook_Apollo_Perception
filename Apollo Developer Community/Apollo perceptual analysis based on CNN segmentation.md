@@ -217,5 +217,45 @@ CNN은 세개의 레이어로 이루어져 있다. `The complete convolutional n
 - Upstream decoding layer (feature decoder)
 - Obstacle property prediction layer (predictor)
 
-The feature encoder takes the channel feature image as input and continuously downsamples its spatial resolution as the feature extraction increases. The feature decoder then gradually aligns with the feature image. Upsampling to the spatial resolution of the input 2D mesh, the spatial details of the feature image can be restored to facilitate the prediction of obstacle position and velocity properties in the cell direction. Downsampling and upsampling operations are implemented according to a stacked convolution/distribution layer with a non-linearly active (ie, ReLu) layer.
+형상 인코더는 입력으로 채널 형상 영상을 취하고 형상 추출이 증가함에 따라 공간 분해능을 지속적으로 하향 샘플링한다.`The feature encoder takes the channel feature image as input and continuously downsamples its spatial resolution as the feature extraction increases. `
+
+이후, 형상 디코더는 형상 이미지를 점차 정렬한다. The feature decoder then gradually aligns with the feature image. 
+
+입력 2D 메쉬의 공간 분해능에 대한 샘플링으로 형상 영상의 공간 세부사항을 복원하여 셀 방향의 장애물 위치와 속도 특성을 쉽게 예측할 수 있다`Upsampling to the spatial resolution of the input 2D mesh, the spatial details of the feature image can be restored to facilitate the prediction of obstacle position and velocity properties in the cell direction. `
+
+Downsampling and upsampling operations are implemented according to a stacked convolution/distribution layer with a non-linearly active (ie, ReLu) layer.
+
+The execution split entry function in the code is as follows, calculated by the forward calculation of caffe's Forword function:
+
+```cpp
+/// file in apollo/master/modules/perception/obstacle/lidar/segmentation/cnnseg/cnn_segmentation.cc
+bool CNNSegmentation::Segment(const pcl_util::PointCloudPtr& pc_ptr,
+                              const pcl_util::PointIndices& valid_indices,
+                              const SegmentationOptions& options,
+                              vector<ObjectPtr>* objects) {
+  // generate raw features
+  ...
+
+  // network forward process
+#ifdef USE_CAFFE_GPU
+  caffe::Caffe::set_mode(caffe::Caffe::GPU);
+#endif
+  caffe_net_->Forward();
+  PERF_BLOCK_END("[CNNSeg] CNN forward");
+}
+```
+
+The obstacle segmentation based on convolutional neural network uses UNet's FCNN. 
+
+The specific structure is as follows:
+
+|![](https://i.imgur.com/Hml2Z8X.png)|![](https://i.imgur.com/a7VB7Vw.png)|
+|-|-|
+
+위 뉴럴네트워크의 결과물은 6개 파트로 나누어 진다. 자세한 파트별 기능은 테이블을 참조 하기 바란다. `The output of the above neural network is divided into six parts, and the functions of each part are shown in the above table. `
+
+This process is the traditional CNN segmentation.
+
+## 3. Obstacle clustering
+
 
