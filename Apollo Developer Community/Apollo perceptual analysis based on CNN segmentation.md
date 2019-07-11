@@ -258,4 +258,4 @@ This process is the traditional CNN segmentation.
 
 ## 3. Obstacle clustering
 
-
+CNN 예측후, 각 셀에 대한 예측 정보를 얻게 된다. `After CNN-based prediction, Apollo obtains prediction information for a single cell.`
