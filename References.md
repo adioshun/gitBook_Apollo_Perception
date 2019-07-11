@@ -35,6 +35,8 @@
 
 - [HOW TO UNDERSTAND ARCHITECTURE AND WORKFLOW](https://github.com/ApolloAuto/apollo/blob/master/docs/howto/how_to_understand_architecture_and_workflow.md)
 
+- [How to Run Perception Module on Your Local Computer](https://github.com/ApolloAuto/apollo/blob/master/docs/howto/how_to_run_perception_module_on_your_local_computer.md)
+
 ## Mooc
 
 - [Self-Driving Fundamentals: Featuring Apollo](https://www.udacity.com/course/self-driving-car-fundamentals-featuring-apollo--ud0419) : Udacity, Free
