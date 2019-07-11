@@ -452,3 +452,9 @@ public:
 }
 ```
 
+
+`GetObjects`함수가 마지막 삭제를 진행 한다. 탐지 물체의 신뢰도는 0.1을 넘어야 한다. 평균 높이 정보는 0.5이하여야 한다. 메쉬를 생성하기에 충분한 포인트수(3개)가 있어야 한다. `As can be seen from the above code, the GetObjects function is the final deletion. The object confidence score must be greater than 0.1. The average height of the CNN segmentation and clustering must be less than 0.5m from the point cloud detection height. Finally, the cluster The resulting candidate object cluster must contain enough mesh numbers, more than three.`
+
+`GetObjectType `는 후보 클러스터에 대응하는 클래스로 매칭한다. `GetObjectType matches the corresponding class according to the category of the candidate object cluster.`
+
+`GetObjectTypeProbs`는 매칭된 클래스에 대한 신뢰 정소를 구한다. `GetObjectTypeProbs calculates the confidence score for this class based on the category of the candidate object cluster.`
