@@ -259,3 +259,119 @@ This process is the traditional CNN segmentation.
 ## 3. Obstacle clustering
 
 CNN 예측후, 각 셀에 대한 예측 정보를 얻게 된다. `After CNN-based prediction, Apollo obtains prediction information for a single cell.`
+
+
+Take advantage of four unit object attribute images, which contain:
+-   Center offset /instance_pt    
+-   Objectivity/category_pt    
+-   Positive / configdence_pt    
+-   Object height / height_pt
+    
+
+
+장애물을 생성하기 위해 아폴로는 셀 중심 offset을 기반으로 **Directed graphs**의 구조를 예측한다. 이후 연결된 컴포넌트(후보 클러스터)를 탐색 한다. `To generate obstacles, Apollo predicts the construction of directed graphs based on cell center offsets and searches for connected components as candidate clusters.`
+
+그림에서 보듯이 각 셀은 그래프의 노드이다.  As shown in the following figure, each cell is a node of the graph, and a directed edge is constructed based on the center offset prediction of the cell, which points to the parent node corresponding to another cell.
+
+아폴로는 연결된 컴포넌트를 찾을때 **compressed Union Find**알고리즘을 사용한다. `As shown below, Apollo uses a compressed Union Find algorithm to efficiently find connected components, each of which is a candidate obstacle object cluster.`
+
+ An object is the probability that a single cell becomes a valid pair of images. Therefore, Apollo defines non-object units as cells with a target of less than 0.5. Therefore, Apollo filters out empty and non-object sets for each candidate cluster.
+
+![](https://i.imgur.com/5VJ5F4N.png)
+
+- (a) A red arrow indicates each cell object center offset prediction; 
+	- a blue fill corresponds to an object unit whose object probability is not less than 0.5.
+
+- (b) Cells within a solid red polygon form a candidate cluster.
+
+The red range filled by the five-pointed star indicates the root node (cell) corresponding to the connected component submap.
+ 
+A candidate cluster can be composed of a plurality of adjacent connection components whose root nodes are adjacent to each other.
+
+위 설명은 아폴로 2.0에 대한 것이다. `The above is a description of the official Apollo 2.0 documentation. `
+
+In this chapter we are still using code to explain how to use CNN segmentation results for obstacle clustering.
+
+This section uses a relatively simple data structure to handle the merging of disjoint sets -- and clustering (or Union Find Sets). 
+
+If you don't know about the collection, you can use this link to get a preliminary understanding. And check the [algorithm](https://www.cnblogs.com/shadowwalker9/p/5999029.html) .
+
+The obstacle prediction and enumeration algorithm is triggered by the Cluster function:
+```cpp
+/// file in apollo/master/modules/perception/obstacle/lidar/segmentation/cnnseg/cnn_segmentation.cc  
+bool CNNSegmentation::Segment(const pcl_util::PointCloudPtr& pc_ptr,  
+ const pcl_util::PointIndices& valid_indices,  
+ const SegmentationOptions& options,  
+ vector<ObjectPtr>* objects) {  
+ // generate raw features  
+ ...  
+ // network forward process  
+ ...  
+ // clutser points and construct segments/objects  
+ cluster2d_->Cluster(*category_pt_blob_, *instance_pt_blob_, pc_ptr,  
+ valid_indices, objectness_thresh,  
+ use_all_grids_for_clustering);  
+}
+
+```
+Below we will gradually understand from the code:
+
+### 3.1 and set up the establishment step 1: Create a new and check - DisjointSetMakeSet
+```cpp
+/// file in apollo/modules/perception/obstacle/lidar/segmentation/cnnseg/cluster2d.h
+class Cluster2D {
+public:
+  void Cluster(const caffe::Blob<float>& category_pt_blob,
+               const caffe::Blob<float>& instance_pt_blob,
+               const apollo::perception::pcl_util::PointCloudPtr& pc_ptr,
+               const apollo::perception::pcl_util::PointIndices& valid_indices,
+               float objectness_thresh, bool use_all_grids_for_clustering) {
+
+    std::vector<std::vector<Node>> nodes(rows_,std::vector<Node>(cols_, Node()));
+    // map points into grids
+    ...
+
+    // construct graph with center offset prediction and objectness
+    for (int row = 0; row < rows_; ++row) {
+      for (int col = 0; col < cols_; ++col) {
+        int grid = RowCol2Grid(row, col);
+        Node* node = &nodes[row][col];
+        DisjointSetMakeSet(node);
+        node->is_object = (use_all_grids_for_clustering || nodes[row][col].point_num > 0) &&
+            (*(category_pt_data + grid) >= objectness_thresh);
+        int center_row = std::round(row + instance_pt_x_data[grid] * scale_);
+        int center_col = std::round(col + instance_pt_y_data[grid] * scale_);
+        center_row = std::min(std::max(center_row, 0), rows_ - 1);
+        center_col = std::min(std::max(center_col, 0), cols_ - 1);
+        node->center_node = &nodes[center_row][center_col];
+      }
+    }
+  }
+}
+
+/// file in apollo/modules/common/util/disjoint_set.h
+template <class T>
+void DisjointSetMakeSet(T *x) {
+  x->parent = x;
+  x->node_rank = 0;
+}
+
+```
+
+
+
+
+### 3.2 and set up the establishment step 2: Generate disjoint sets (trees)--Traverse
+
+
+
+### 3.3 and the collection establishment step 3: disjoint collection (tree) merge -- DisjointSetUnion
+
+
+### 3.4 After the merger, each tree represents a type of object and records
+
+
+---
+
+## 4. Post processing
+
