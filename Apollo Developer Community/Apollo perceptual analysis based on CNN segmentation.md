@@ -1,3 +1,121 @@
+# [Apollo based on convolutional neural network segmentation](https://blog.csdn.net/qq_41206519/article/details/88563705)
+
+The input data of this stage comes from the point cloud data filtered by the high-precision map ROI filter.
+
+This stage is mainly divided into 4 sub-processes:
+
+- Channel feature extraction
+- Obstacle prediction based on convolutional neural network
+- Obstacle cluster
+- Post processing
+
+## 1. Channel feature extraction
+
+Given a point cloud framework (cloud_roi), Apollo builds a top view (ie projected onto the XY plane) 2D grid in the local coordinate system. Based on the X, Y coordinates of the point, each point is quantized into a unit of the 2D grid within a predetermined range relative to the origin of the LiDAR sensor. After quantification, Apollo calculates eight statistical measurements of the points in each cell in the grid, which will be the input channel characteristics passed to the (convolutional neural network) CNN in the next step. 8 statistical measurements calculated:
+
+
+- The maximum height of the point in the cell
+- The strength of the highest point in the cell
+- The average height of the points in the cell
+- Average intensity of the points in the cell
+- Number of points in the cell
+- The angle of the cell center relative to the origin
+- The distance between the center of the cell and the origin
+- The binary value indicates whether the cell is empty or occupied (is there a bit in the cell)
+
+The angle and distance of the cell center relative to the origin are only related to the cell position, and the remaining features are obtained by calculating the characteristics of the point (position x, y, z and intensity in the point cloud).
+
+The specific calculation method is as follows:
+
+
+
+```cpp
+/// file in apollo/modules/perception/obstacle/lidar/segmentation/cnnseg/cnn_segmentation.cc
+bool FeatureGenerator<Dtype>::Init(const FeatureParam& feature_param, caffe::Blob<Dtype>* out_blob) {
+for (int row = 0; row < height_; ++row) {
+for (int col = 0; col < width_; ++col) {
+int idx = row * width_ + col;
+// * row <-> x, column <-> y
+float center_x = Pixel2Pc(row, height_, range_); // 计算映射坐标: center_x
+float center_y = Pixel2Pc(col, width_, range_); // 计算映射坐标: center_y
+constexpr double K_CV_PI = 3.1415926535897932384626433832795;
+direction_data[idx] = static_cast<Dtype>(std::atan2(center_y, center_x) / (2.0 * K_CV_PI)); // 计算方向direction_data(channel 6)
+distance_data[idx] = static_cast<Dtype>(std::hypot(center_x, center_y) / 60.0 - 0.5); // 计算距离compute distance_data(channel 7)
+}
+}
+return true;
+}
+
+void FeatureGenerator<Dtype>::Generate(const apollo::perception::pcl_util::PointCloudConstPtr& pc_ptr) {
+for (size_t i = 0; i < points.size(); ++i) {
+// 1. 去除高度在 [-5.0,5.0]之外的点
+...
+// 2. 去除在x:[-60,60], y:[-60,60]之外的点
+...
+float pz = points[i].z;
+float pi = points[i].intensity / 255.0;
+if (max_height_data_[idx] < pz) { //更新单元格中最高的点max_height_data(channel 1)
+max_height_data_[idx] = pz;
+top_intensity_data_[idx] = pi;	// 更新单元格中强度最大的点 top_intensity_data(channel 2)
+}
+mean_height_data_[idx] += static_cast<Dtype>(pz); //累积单元格高度
+mean_intensity_data_[idx] += static_cast<Dtype>(pi); // 累积单元格强度
+count_data_[idx] += Dtype(1); //计算单元格中的点数 count_data(channel 5)
+}
+
+for (int i = 0; i < siz; ++i) {
+constexpr double EPS = 1e-6;
+if (count_data_[i] < EPS) {
+max_height_data_[i] = Dtype(0);
+} else {
+mean_height_data_[i] /= count_data_[i]; // 计算单元格平均高度 mean_height_data(channel 3)
+mean_intensity_data_[i] /= count_data_[i]; // 计算单元格平均强度mean_intensity_data(channel 5)
+nonempty_data_[i] = Dtype(1); // 二进制值标示单元格是空还是被占用nonempty_data(channel 8)
+}
+}
+}
+
+/// file in apollo/modules/perception/obstacle/lidar/segmentation/cnnseg/util.h
+inline float Pixel2Pc(int in_pixel, float in_size, float out_range) {
+float res = 2.0 * out_range / in_size;
+return out_range - (static_cast<float>(in_pixel) + 0.5f) * res;
+}
+```
+
+## 2. Obstacle prediction based on convolutional neural network
+
+12 features about cells can be obtained by convolutional neural network prediction
+
+- Channel 0: Whether category_pt is an object prediction. Sigmoid is activated and multiplied by the input channel 7 mask mask
+- Channel 1-2: instance_pt center offset prediction (including offsets in the x and y directions)
+- Channel 3: confidence_pt Probabilistic prediction of foreground objects. Sigmoid activation
+- Channel 4-8: classify_pt object class prediction. Sigmoid activation (can predict 5 objects such as pedestrians, cars, bicycles, etc.)
+- Channel 9-10: heading_pt -
+- Channel 11: height_pt Height prediction.
+
+By processing 12 features, you can get 4 attributes of the cell, which are used for obstacle clustering and post-processing respectively.
+
+![](https://i.imgur.com/pwEw6LH.png)
+
+## 3. Obstacle clustering
+
+To generate obstacles, Apollo predicts the construction of directed graphs based on cell center offsets and searches for connected components as candidate clusters.
+
+As shown in the following figure, each cell is a node of the graph, and a directed edge is constructed based on the center offset prediction of the cell, which points to the parent node corresponding to another cell.
+
+![](https://i.imgur.com/5VJ5F4N.png)
+
+In the top view, the performance is like this
+
+|![](https://i.imgur.com/si5HTrQ.jpg)|![](https://i.imgur.com/VPdbPBx.png)|
+|-|-|
+
+## 4. Post processing
+After clustering, Apollo obtains a set of candidate objects, each of which includes several cells.
+
+In post-processing, Apollo first averages the detection confidence score and object height for each candidate population for the enthusiasm of the cells involved and the object height values. Apollo then removes points that are too high relative to the predicted object and collects points for valid cells in each candidate set. Finally, Apollo deletes candidate clusters with very low confidence scores or small points to output the final set of obstacles.
+
+---
 # Apollo perceptual analysis based on convolutional neural network segmentation
 
 
@@ -459,3 +577,6 @@ public:
 `GetObjectType `는 후보 클러스터에 대응하는 클래스로 매칭한다. `GetObjectType matches the corresponding class according to the category of the candidate object cluster.`
 
 `GetObjectTypeProbs`는 매칭된 클래스에 대한 신뢰 정소를 구한다. `GetObjectTypeProbs calculates the confidence score for this class based on the category of the candidate object cluster.`
+
+
+---
