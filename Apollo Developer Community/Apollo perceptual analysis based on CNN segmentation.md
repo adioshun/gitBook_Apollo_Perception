@@ -375,3 +375,80 @@ void DisjointSetMakeSet(T *x) {
 
 ## 4. Post processing
 
+
+클러스터링 후보 물체들을 얻게 된다. `After clustering, Apollo obtains a set of candidate objects, each of which includes several cells.`
+
+  
+In post-processing,
+-  먼저 각 후도 물체의 탐지 신뢰도와 물체의 높이를 평균을 구한다. ` Apollo first averages the detection confidence score and object height for each candidate population for the enthusiasm of the cells involved and the object height values. `
+- 다음 값이 너무 큰 포인트들은 제거 한다. `Apollo then removes points that are too high relative to the predicted object and collects points for valid cells in each candidate set. `
+- 마지막으로 너무 낮은 신뢰도나 포인트수가 적은 클러스터들을 제거 한다. `Finally, Apollo deletes candidate clusters with very low confidence scores or small points to output the final obstacle set/segment.`
+
+사용자 지정 설정 : User-defined parameters can be set in`modules/perception/model/cnn_segmentation/cnnseg.conf`the configuration file. 
+
+The following table describes the parameter usage and default values ​​for CNN subdivisions:
+![](https://i.imgur.com/mCaq2OZ.png)
+
+```cpp
+/// file in apollo/master/modules/perception/obstacle/lidar/segmentation/cnnseg/cnn_segmentation.cc  
+bool CNNSegmentation::Segment(const pcl_util::PointCloudPtr& pc_ptr,  
+ const pcl_util::PointIndices& valid_indices,  
+ const SegmentationOptions& options,  
+ vector<ObjectPtr>* objects) {  
+ // generate raw features  
+ ...  
+ // network forward process  
+ ...  
+ // clutser points and construct segments/objects  
+ ...  
+ // post process  
+ cluster2d_->Filter(*confidence_pt_blob_, *height_pt_blob_);  
+  
+ cluster2d_->Classify(*class_pt_blob_);  
+  
+ cluster2d_->GetObjects(confidence_thresh, height_thresh, min_pts_num, objects);  
+}
+```
+
+필터기와 분류기의 코드는 간단하다. `The Filter and Classify function codes are very simple.`
+
+필터기는 각 후보 클러스터의 평균 점수와 높이를 계산하고, 분규기는 각 후보 클러스터의 분류 신뢰도의 평균을 구한다. `The former calculates the average score and height of each candidate object cluster, and the latter calculates the average confidence score corresponding to the k-class object classification of each candidate object cluster and the associated object category (corresponding to the maximum average). Confidence score for that category).`
+
+```cpp
+
+/// file in apollo/modules/perception/obstacle/lidar/segmentation/cnnseg/cluster2d.h
+class Cluster2D {
+public:
+  void GetObjects(const float confidence_thresh, const float height_thresh, const int min_pts_num, std::vector<ObjectPtr>* objects) {
+
+    for (size_t i = 0; i < point2grid_.size(); ++i) {
+      int grid = point2grid_[i];
+      int obstacle_id = id_img_[grid];
+      int point_id = valid_indices_in_pc_->at(i);
+      // select obstacles which averaged score greater equal than confidence_thresh(0.1)
+      // and averaged height in the interval
+      if (obstacle_id >= 0 && obstacles_[obstacle_id].score >= confidence_thresh) {
+        if (height_thresh < 0 || pc_ptr_->points[point_id].z <= obstacles_[obstacle_id].height + height_thresh) {
+          obstacles_[obstacle_id].cloud->push_back(pc_ptr_->points[point_id]);
+        }
+      }
+    }
+    
+    // select obstacles which has minimal points at least min_pts_num(3)
+    for (size_t obstacle_id = 0; obstacle_id < obstacles_.size(); obstacle_id++) {
+      Obstacle* obs = &obstacles_[obstacle_id];
+      if (static_cast<int>(obs->cloud->size()) < min_pts_num) {
+        continue;
+      }
+      apollo::perception::ObjectPtr out_obj(new apollo::perception::Object);
+      out_obj->cloud = obs->cloud;
+      out_obj->score = obs->score;
+      out_obj->score_type = ScoreType::SCORE_CNN;
+      out_obj->type = GetObjectType(obs->meta_type);
+      out_obj->type_probs = GetObjectTypeProbs(obs->meta_type_probs);
+      objects->push_back(out_obj);
+    }
+  }
+}
+```
+
