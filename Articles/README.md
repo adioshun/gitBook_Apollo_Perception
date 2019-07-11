@@ -1,5 +1,22 @@
 
-Reference source:
+
+[Baidu Apollo Plan Tracking: Article Summary](https://blog.csdn.net/qq_25241325/article/details/81271298)
+
+[Baidu apollo - Apollo summary of ROS optimization](https://blog.csdn.net/DinnerHowe/article/details/79935384)
+
+[Apollo ROS](https://blog.csdn.net/Ali_start/article/details/85946953)
+
+
+[Detailed explanation of Apollo sensing module algorithm](https://blog.csdn.net/xiangxianghehe/article/details/82222857)
+
+
+[Baidu Apollo] 4.1 Perception](https://blog.csdn.net/yuxuan20062007/article/details/81348010)
+
+
+
+[Apollo perception](https://blog.csdn.net/Ali_start/article/details/84932822), [Apollo Perception 2 - Perceptual Types and Algorithms](https://blog.csdn.net/Ali_start/article/details/85475309)
+
+---
 
 [1] [Apollo 2.0 framework and source code analysis (zero) | Introduction](https://zhuanlan.zhihu.com/p/33240932)
 
