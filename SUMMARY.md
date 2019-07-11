@@ -9,7 +9,7 @@
 ## Articles
 
 - [README](Articles/README.md)
-- [Apollo 2.0 Framework and Source Code Analysis](Articles/Apollo 2.0 Framework and Source Code Analysis.md)
+- [CNN_Seg parsed by apollo perceptual algorithm](Articles/CNN_Seg parsed by apollo perceptual algorithm.md)
 
 
 

@@ -26,3 +26,22 @@ Reference source:
 [12] [interesting algorithm series - Hungary algorithm - CSDN blog](https://link.zhihu.com/?target=http%3A//blog.csdn.net/dark_scope/article/details/8880547)
 
 [13] [The principle of Kalman filter and its implementation in matlab](https://link.zhihu.com/?target=https%3A//v.qq.com/x/page/o03766f94ru.html)
+
+
+[1] [Apollo 2.0 framework and source code analysis (2) | Perceptual module | Lidar](https://zhuanlan.zhihu.com/p/33416142)
+
+[2] [Multi-source information fusion (Second Edition)] Han Chongzhao waiting for Tsinghua University Press
+
+[3] [extended Kalman filter EKF and multi-sensor fusion - CSDN Blog](https://link.zhihu.com/?target=http%3A//blog.csdn.net/young_gy/article/details/78468153)
+
+[4] [[Apollo straight answer] Is Apollo high-precision map using standard OpenDRIVE? Or is it a format defined by myself?](https://link.zhihu.com/?target=https%3A//mp.weixin.qq.com/s/mErKo1CTV14iY2cKkRUVhA)
+
+[5] [Kalman filter - Wikipedia](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Kalman_filter)
+
+[6] [Apollo Planning module source code analysis](https://link.zhihu.com/?target=http%3A//blog.csdn.net/davidhopper/article/details/79176505)
+
+[7] [ApolloAuto/apollo/modules/perception](https://link.zhihu.com/?target=https%3A//github.com/ApolloAuto/apollo/tree/master/modules/perception)
+
+[8] [Doxygen_百度文库](https://link.zhihu.com/?target=https%3A//baike.baidu.com/item/Doxygen/1366536%3Ffr%3Daladdin)
+
+[9] [Apollo: Main Page](https://link.zhihu.com/?target=https%3A//apolloauto.github.io/doxygen/apollo/index.html)
