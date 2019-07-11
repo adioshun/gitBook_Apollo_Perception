@@ -317,6 +317,7 @@ bool CNNSegmentation::Segment(const pcl_util::PointCloudPtr& pc_ptr,
 Below we will gradually understand from the code:
 
 ### 3.1 and set up the establishment step 1: Create a new and check - DisjointSetMakeSet
+
 ```cpp
 /// file in apollo/modules/perception/obstacle/lidar/segmentation/cnnseg/cluster2d.h
 class Cluster2D {
