@@ -6,7 +6,6 @@
 * [References](References.md)
 * [Overview](Fundamental/README.md)
 
-## Apollo Lidar 3D Obstacle Perception
 
 ## Apollo Developer Community
 
