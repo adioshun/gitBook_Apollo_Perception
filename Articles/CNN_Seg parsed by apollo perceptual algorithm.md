@@ -3,7 +3,7 @@
 
 > Posted on 2018-03-28
 
-아폴로도 `cnn_seg module`모듈에서 인식에 대한 작업을 수행한다. 하지만 코드를 공개 하지 않았기에 파악한 수준만 정리 하고자 한다. `When apollo is doing context awareness, the cnn_seg module is used to perform target detection on the point cloud. After deep understanding of the principles, I could not help but sigh, it can still be done this way. Unfortunately, I have not found a paper related to this method (if a classmate knows, please tell me), apollo does not open source its training source (= =! Say good open source). Here, I will make a record of what I have learned during this time, including some doubts, and it can be regarded as a joke, and all the gods are welcome to enlighten me.`
+아폴로도 `cnn_seg module`모듈에서 인식에 대한 작업을 수행한다. 하지만 논문을 공개 하지 않았기에 파악한 수준만 정리 하고자 한다. `When apollo is doing context awareness, the cnn_seg module is used to perform target detection on the point cloud. After deep understanding of the principles, I could not help but sigh, it can still be done this way. Unfortunately, I have not found a paper related to this method (if a classmate knows, please tell me), apollo does not open source its training source (= =! Say good open source). Here, I will make a record of what I have learned during this time, including some doubts, and it can be regarded as a joke, and all the gods are welcome to enlighten me.`
 
 ## 1. Cnn_seg
 
