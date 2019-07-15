@@ -16,6 +16,38 @@
 
 [Apollo perception](https://blog.csdn.net/Ali_start/article/details/84932822), [Apollo Perception 2 - Perceptual Types and Algorithms](https://blog.csdn.net/Ali_start/article/details/85475309)
 
+
+
+---
+
+[Apollo's Perceptual Fusion Module Analysis]([https://blog.csdn.net/u012423865/article/details/80386444](https://blog.csdn.net/u012423865/article/details/80386444))
+
+[Baidu Apollo] 4.1 Perception [https://blog.csdn.net/yuxuan20062007/article/details/81348010](https://blog.csdn.net/yuxuan20062007/article/details/81348010)
+
+Apollo learning to organize (2) perception [https://blog.csdn.net/gloria_iris/article/details/91474781](https://blog.csdn.net/gloria_iris/article/details/91474781)
+
+Apollo Autopilot Introductory Lesson 4 - Perception (I) [https://blog.csdn.net/cg129054036/article/details/82865951](https://blog.csdn.net/cg129054036/article/details/82865951)
+
+Apollo sensing module: (based on single-purpose camera object detection) [https://blog.csdn.net/weixin_41015185/article/details/83414890](https://blog.csdn.net/weixin_41015185/article/details/83414890)
+
+Apollo perceptual algorithm lidar part [https://blog.csdn.net/weixin_33802505/article/details/88470898](https://blog.csdn.net/weixin_33802505/article/details/88470898)
+
+Apollo Notes: Perception [https://blog.csdn.net/Travis_X/article/details/87915462](https://blog.csdn.net/Travis_X/article/details/87915462)
+
+[Apollo source code analysis] the second part of the series [perception] [https://blog.csdn.net/learnmoreonce/article/details/77542419](https://blog.csdn.net/learnmoreonce/article/details/77542419)
+
+Apollo perception [https://blog.csdn.net/Ali_start/article/details/84932822](https://blog.csdn.net/Ali_start/article/details/84932822)
+
+Lidar point cloud data processing algorithm library collection [https://blog.csdn.net/kuikuijia/article/details/46157207](https://blog.csdn.net/kuikuijia/article/details/46157207)
+
+3d Visualization of laser point cloud obstacle detection classification data in Baidu Apollo's data open platform [https://blog.csdn.net/CAIYUNFREEDOM/article/details/89500198](https://blog.csdn.net/CAIYUNFREEDOM/article/details/89500198)
+
+Baidu Apollo track planning technology sharing notes [https://zhuanlan.zhihu.com/p/69878689](https://zhuanlan.zhihu.com/p/69878689)
+
+Baidu apollo3.0 automatic driving principle introduction -3D obstacle perception [https://blog.csdn.net/cmdholder/article/details/85280368](https://blog.csdn.net/cmdholder/article/details/85280368)
+
+Apollo based on convolutional neural network segmentation [https://blog.csdn.net/qq_41206519/article/details/88563705](https://blog.csdn.net/qq_41206519/article/details/88563705)
+
 ---
 
 [1] [Apollo 2.0 framework and source code analysis (zero) | Introduction](https://zhuanlan.zhihu.com/p/33240932)
