@@ -10,7 +10,7 @@
 
 - [README](Articles/README.md)
 - [CNN_Seg parsed by apollo perceptual algorithm](Articles/CNN_Seg parsed by apollo perceptual algorithm.md)
-
+- [4-1-Perception](Articles/4-1-Perception.md)
 
 
 
