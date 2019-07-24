@@ -26,8 +26,6 @@
 
 
 
-
-
 - [Apollo 3.0 reading notes](https://github.com/YannZyl/Apollo-Note): YannZyl's 깃허브 
 
 
@@ -41,6 +39,8 @@
 ## Mooc
 
 - [Self-Driving Fundamentals: Featuring Apollo](https://www.udacity.com/course/self-driving-car-fundamentals-featuring-apollo--ud0419) : Udacity, Free
+    - [Self-Driving Fundamentals with Apollo : Lesson 1](http://harderthan.co.kr/2018/10/19/self-driving-fundamentals-with-apollo_lesson-1/) : 한글
+    - [Self-Driving Fundamentals with Apollo : Lesson 2](http://harderthan.co.kr/2018/10/23/self-driving-fundamentals-with-apollo-lesson-2/) : 한
 
 
 ## youtube
